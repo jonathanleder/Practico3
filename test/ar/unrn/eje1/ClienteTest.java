@@ -1,7 +1,14 @@
 package ar.unrn.eje1;
 
-public class Main {
-	public static void main(String args[]) {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+class ClienteTest {
+
+	@Test
+	void testCalcularDeudaYPuntosObtenidos() {
+
 		Libro elTunel = new Libro("El Tunel", Libro.REGULARES);
 		Libro antesDelFin = new Libro("Antes del Fin", Libro.REGULARES);
 		CopiaLibro elTunelCopia = new CopiaLibro(elTunel);
@@ -14,5 +21,9 @@ public class Main {
 		Object[] resultado = yo.calcularDeudaYPuntosObtenidos();
 		System.out.println(resultado[0]);
 		System.out.println(resultado[1]);
+
+		assertEquals(10.0, resultado[0]);
+		assertEquals(2, resultado[1]);
 	}
+
 }

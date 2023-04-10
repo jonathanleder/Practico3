@@ -4,50 +4,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cliente {
-  private List<Alquiler> alquileres = new ArrayList<Alquiler>();
-  private String name;
+	private List<Alquiler> alquileres = new ArrayList<Alquiler>();
+	private String name;
+	private int puntosAlquilerFrecuente;
 
-  public Cliente(String nombre) {
-    this.name = nombre;
-  }
+	public Cliente(String nombre) {
+		this.name = nombre;
+		this.puntosAlquilerFrecuente = 0;// Los puntos de alquiler deben guardarse en el cliente para que no se
+											// reinicien en cada invocacion al metodo
+	}
 
-  public Object[] calcularDeudaYPuntosObtenidos() {
-    Object[] resultado = new Object[2];
-    double total = 0;
-    int puntosAlquilerFrecuente = 0;
-    for (Alquiler alquiler : alquileres) {
-      double monto = 0;
-// determine amounts for each line
-      switch (alquiler.copia().libro().codigoPrecio()) {
-      case Libro.REGULARES:
-        monto += 2;
-        if (alquiler.diasAlquilados() > 2)
-          monto += (alquiler.diasAlquilados() - 2) * 1.5;
-        break;
-      case Libro.NUEVO_LANZAMIENTO:
-        monto += alquiler.diasAlquilados() * 3;
-        break;
-      case Libro.INFANTILES:
-        monto += 1.5;
-        if (alquiler.diasAlquilados() > 3)
-          monto += (alquiler.diasAlquilados() - 3) * 1.5;
-        break;
-      }
-      total += monto;
-      // sumo puntos por alquiler
-      puntosAlquilerFrecuente++;
-      // bonus por dos días de alquiler de un nuevo lanzamiento
-      if ((alquiler.copia().libro().codigoPrecio() == Libro.NUEVO_LANZAMIENTO)
-          && alquiler.diasAlquilados() > 1) {
-        puntosAlquilerFrecuente++;
-      }
-    }
-    resultado[0] = total;
-    resultado[1] = puntosAlquilerFrecuente;
-    return resultado;
-  }
+	public Object[] calcularDeudaYPuntosObtenidos() {
+		Object[] resultado = new Object[2];
+		double total = 0;
+		for (Alquiler alquiler : alquileres) {
 
-  public void alquilar(Alquiler rental) {
-    alquileres.add(rental);
-  }
+			total += calcularMonto(alquiler);// invoco para saber cuanto cuesta el libro de cada alquiler
+			this.puntosAlquilerFrecuente++;
+			if ((alquiler.esLibroNuevo()) && alquiler.diasAlquilados() > 1) {
+				this.puntosAlquilerFrecuente++;
+			}
+		}
+		resultado[0] = total;
+		resultado[1] = this.puntosAlquilerFrecuente;
+		return resultado;
+	}
+
+	private double calcularMonto(Alquiler alquiler) {
+		return alquiler.copia().libro().calcularMonto(alquiler.diasAlquilados());// De acuerdo al tipo delibro que este
+																					// guardado dentro de la lista de
+																					// alquileres va a calcular segun su
+																					// tipo
+	}
+
+	public void alquilar(Alquiler rental) {
+		alquileres.add(rental);
+	}
 }
