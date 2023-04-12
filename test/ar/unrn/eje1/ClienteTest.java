@@ -9,8 +9,8 @@ class ClienteTest {
 	@Test
 	void testCalcularDeudaYPuntosObtenidos() {
 
-		Libro elTunel = new Libro("El Tunel", Libro.REGULARES);
-		Libro antesDelFin = new Libro("Antes del Fin", Libro.REGULARES);
+		Libro elTunel = new LibroRegular("El Tunel", LibroRegular.REGULARES);
+		Libro antesDelFin = new LibroRegular("Antes del Fin", LibroRegular.REGULARES);
 		CopiaLibro elTunelCopia = new CopiaLibro(elTunel);
 		CopiaLibro antesDelFinCopia = new CopiaLibro(antesDelFin);
 		Alquiler alquilerElTunel = new Alquiler(elTunelCopia, 5);
@@ -18,12 +18,12 @@ class ClienteTest {
 		Cliente yo = new Cliente("Javier");
 		yo.alquilar(alquilerElTunel);
 		yo.alquilar(alquilerAntesDelFin);
-		Object[] resultado = yo.calcularDeudaYPuntosObtenidos();
-		System.out.println(resultado[0]);
-		System.out.println(resultado[1]);
+		Recibo resultado = yo.calcularDeudaYPuntosObtenidos();
+		System.out.println(resultado.montoTotal());
+		System.out.println(resultado.puntosObtenidos());
 
-		assertEquals(10.0, resultado[0]);
-		assertEquals(2, resultado[1]);
+		assertEquals(10.0, resultado.montoTotal());
+		assertEquals(2, resultado.puntosObtenidos());
 	}
 
 }
