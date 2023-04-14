@@ -11,7 +11,7 @@ public class Main {
 			Map<String, String> options = new HashMap<String, String>();
 			options.put("company_name", "Facebook");
 			options.put("round", "a");
-			System.out.print(Recaudacion.where(options).size());
+			System.out.print(Recaudacion.donde(options).size());
 		} catch (IOException e) {
 			System.out.print(e.getMessage());
 			System.out.print("error");

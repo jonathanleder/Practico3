@@ -11,82 +11,35 @@ import com.opencsv.CSVReader;
 
 public class Recaudacion {
 
-	public static List<Map<String, String>> where(Map<String, String> options) throws IOException {
-		List<String[]> csvData = new ArrayList<String[]>();
-		CSVReader reader = new CSVReader(new FileReader("data.csv"));
-		String[] row = null;
+	private static Filtro COMPANIA = Filtro.COMPANIA;
+	private static Filtro CIUDAD = Filtro.CIUDAD;
+	private static Filtro ESTADO = Filtro.ESTADO;
+	private static Filtro ENTORNO = Filtro.ENTORNO;
 
-		while ((row = reader.readNext()) != null) {
-			csvData.add(row);
+	public static List<Map<String, String>> donde(Map<String, String> options) throws IOException {
+
+		CSV controlador = new CSV(new ArrayList<String[]>(), new CSVReader(new FileReader("data.csv")),
+				((HashMap<String, String>) options));
+		controlador.cargarCSV();
+
+		if (options.containsKey(COMPANIA.obtenerNombre())) {
+			controlador.filtrarPorTipo(COMPANIA.obtenerNombre(), COMPANIA.obtenerValor());
 		}
 
-		reader.close();
-		csvData.remove(0);
-
-		if (options.containsKey("company_name")) {
-			List<String[]> results = new ArrayList<String[]>();
-
-			for (int i = 0; i < csvData.size(); i++) {
-				if (csvData.get(i)[1].equals(options.get("company_name"))) {
-					results.add(csvData.get(i));
-				}
-			}
-			csvData = results;
+		if (options.containsKey(CIUDAD.obtenerNombre())) {
+			controlador.filtrarPorTipo(CIUDAD.obtenerNombre(), CIUDAD.obtenerValor());
 		}
 
-		if (options.containsKey("city")) {
-			List<String[]> results = new ArrayList<String[]>();
+		if (options.containsKey(ESTADO.obtenerNombre())) {
 
-			for (int i = 0; i < csvData.size(); i++) {
-				if (csvData.get(i)[4].equals(options.get("city"))) {
-					results.add(csvData.get(i));
-				}
-			}
-			csvData = results;
+			controlador.filtrarPorTipo(ESTADO.obtenerNombre(), ESTADO.obtenerValor());
 		}
 
-		if (options.containsKey("state")) {
-			List<String[]> results = new ArrayList<String[]>();
-
-			for (int i = 0; i < csvData.size(); i++) {
-				if (csvData.get(i)[5].equals(options.get("state"))) {
-					results.add(csvData.get(i));
-				}
-			}
-			csvData = results;
+		if (options.containsKey(ENTORNO.obtenerNombre())) {
+			controlador.filtrarPorTipo(ENTORNO.obtenerNombre(), ENTORNO.obtenerValor());
 		}
 
-		if (options.containsKey("round")) {
-			List<String[]> results = new ArrayList<String[]>();
-
-			for (int i = 0; i < csvData.size(); i++) {
-				if (csvData.get(i)[9].equals(options.get("round"))) {
-					results.add(csvData.get(i));
-				}
-			}
-			csvData = results;
-		}
-
-		List<Map<String, String>> output = new ArrayList<Map<String, String>>();
-
-		for (int i = 0; i < csvData.size(); i++) {
-			Map<String, String> mapped = new HashMap<String, String>();
-			mapped.put("permalink", csvData.get(i)[0]);
-			mapped.put("company_name", csvData.get(i)[1]);
-			mapped.put("number_employees", csvData.get(i)[2]);
-			mapped.put("category", csvData.get(i)[3]);
-			mapped.put("city", csvData.get(i)[4]);
-			mapped.put("state", csvData.get(i)[5]);
-			mapped.put("funded_date", csvData.get(i)[6]);
-			mapped.put("raised_amount", csvData.get(i)[7]);
-			mapped.put("raised_currency", csvData.get(i)[8]);
-			mapped.put("round", csvData.get(i)[9]);
-			output.add(mapped);
-		}
-		return output;
+		return controlador.cargarMapa();
 	}
 
-}
-
-class NoSuchEntryException extends Exception {
 }
