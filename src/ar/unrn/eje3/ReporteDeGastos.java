@@ -1,48 +1,36 @@
 package ar.unrn.eje3;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class ReporteDeGastos {
 
-	Gasto unGasto = new Gasto(TipoDeGasto.CENA, 295);
+	private ProveedorFecha fecha;
+	private ArrayList<Gasto> gastos;
+	private int total = 0;
+	private int gastosDeComida = 0;
+	private String informe;
 
-	public String imprimir(List<Gasto> gastos) {
-		int total = 0;
-		int gastosDeComida = 0;
+	public ReporteDeGastos(ArrayList<Gasto> gastos, ProveedorFecha fecha) {
 
-		System.out.println("Expensas " + LocalDate.now());
+		this.gastos = Objects.requireNonNull(gastos);
+		this.fecha = Objects.requireNonNull(fecha);
+		this.informe = "Expensas " + fecha.fecha() + System.lineSeparator();
+	}
 
+	public String imprimir() {
 		for (Gasto gasto : gastos) {
-			if (gasto.tipoGasto() == TipoDeGasto.CENA || gasto.tipoGasto() == TipoDeGasto.DESAYUNO) {
+			if (gasto.esComida())
 				gastosDeComida += gasto.monto();
-			}
-
-			String nombreGasto = "";
-			switch (gasto.tipoGasto()) {
-			case CENA:
-				nombreGasto = "Cena";
-				break;
-			case DESAYUNO:
-				nombreGasto = "Desayuno";
-				break;
-			case ALQUILER_AUTO:
-				nombreGasto = "Alquiler de Autos";
-				break;
-			}
-
-			String marcaExcesoComidas = gasto.tipoGasto() == TipoDeGasto.CENA && gasto.monto() > 5000
-					|| gasto.tipoGasto() == TipoDeGasto.DESAYUNO && gasto.monto() > 1000 ? "X" : " ";
-
-			System.out.println(nombreGasto + "\t" + gasto.monto() + "\t" + marcaExcesoComidas);
-
+			informe += gasto.nombre() + "\t" + gasto.monto() + "\t" + gasto.excesoComida() + System.lineSeparator();
 			total += gasto.monto();
 		}
 
-		String imprimir = "Gastos de comida: " + gastosDeComida;
-		String esto = " Total de gastos: " + total;
-		System.out.println("Gastos de comida: " + gastosDeComida);
-		System.out.println("Total de gastos: " + total);
-		return imprimir.concat(esto);
+		informe += "Gastos de comida: " + gastosDeComida + System.lineSeparator() + "Total de gastos: " + total;
+		return informe;
+	}
+
+	public String fechaReporte() {
+		return this.fecha.fecha();
 	}
 }

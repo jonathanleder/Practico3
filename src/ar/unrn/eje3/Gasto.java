@@ -1,20 +1,28 @@
 package ar.unrn.eje3;
 
-public class Gasto {
+public abstract class Gasto {
 
-	private TipoDeGasto tipoGasto;
-	private int monto;
+	TipoDeGasto tipoGasto;
+	int monto;
 
 	public Gasto(TipoDeGasto tipo, int monto) {
 		this.tipoGasto = tipo;
 		this.monto = monto;
 	}
 
+	public String nombre() {
+		return this.tipoGasto.toString();
+	}
+
 	public TipoDeGasto tipoGasto() {
 		return tipoGasto;
 	}
 
-	public int monto() {
-		return monto;
+	boolean esComida() {
+		return this.tipoGasto == TipoDeGasto.CENA || this.tipoGasto == TipoDeGasto.DESAYUNO;
 	}
+
+	abstract String excesoComida();
+
+	public abstract int monto();
 }
